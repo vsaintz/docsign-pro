@@ -1,0 +1,211 @@
+@if (showCreateModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-4"
+    (click)="showCreateModal.set(false)"
+  >
+    <div
+      class="bg-background border border-border rounded-2xl w-full max-w-lg p-7 shadow-xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between mb-7">
+        <h2 class="text-[18px] font-medium text-foreground">Create new</h2>
+        <button
+          (click)="showCreateModal.set(false)"
+          class="w-7 h-7 flex items-center justify-center rounded-md text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+        >
+          <app-icon name="X" [size]="16" />
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <button
+          (click)="openNewProjectModal($event)"
+          class="flex flex-col items-start gap-5 p-5 rounded-xl border border-border hover:-translate-y-0.5 hover:shadow-md transition-all text-left cursor-pointer"
+        >
+          <div class="p-2.5 border border-border rounded-lg bg-background-subtle">
+            <app-icon name="Presentation" class="text-foreground" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-foreground mb-1">New Project</p>
+            <p class="text-xs font-light text-foreground-muted leading-relaxed">
+              Organise documents into a project
+            </p>
+          </div>
+        </button>
+
+        <button
+          (click)="openNewDocumentModal($event)"
+          class="flex flex-col items-start gap-5 p-5 rounded-xl border border-border hover:-translate-y-0.5 hover:shadow-md transition-all text-left cursor-pointer"
+        >
+          <div class="p-2.5 border border-border rounded-lg bg-background-subtle">
+            <app-icon name="FileText" class="text-foreground" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-foreground mb-1">New Document</p>
+            <p class="text-xs font-light text-foreground-muted leading-relaxed">
+              Upload or create a new document
+            </p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (mobileOpen()) {
+  <div class="fixed inset-0 z-30 bg-black/30 lg:hidden" (click)="closeMobile()"></div>
+}
+
+<aside
+  class="flex flex-col w-[280px] sm:w-64 h-full bg-background border-r border-border transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 fixed inset-y-0 left-0 z-40"
+  [class.translate-x-0]="mobileOpen()"
+  [class.-translate-x-full]="!mobileOpen()"
+>
+  <div class="flex items-center gap-3 p-2 m-3 rounded-xl shrink-0">
+    <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
+      <svg-sitelogo [size]="25" />
+    </div>
+    <div class="flex flex-col min-w-0">
+      <span class="text-sm font-medium text-foreground-muted tracking-tight truncate"
+        >DocSign Pro</span
+      >
+      <span class="text-sm text-foreground truncate">Workspace</span>
+    </div>
+    <button
+      class="ml-auto w-7 h-7 flex items-center justify-center rounded-md text-foreground bg-background-subtle p-2 rounded-md border border-border lg:hidden cursor-pointer"
+      (click)="closeMobile()"
+    >
+      <app-icon name="X" [size]="15" />
+    </button>
+  </div>
+
+  <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-2 flex flex-col gap-1">
+    @if (user$ | async; as user) {
+      @if (!user.is_staff) {
+        <div class="px-1 pt-1 pb-4 shrink-0 mb-2">
+          <button
+            (click)="showCreateModal.set(true)"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-white bg-accent text-[13px] font-medium rounded-lg cursor-pointer transition-all active:scale-[0.98]"
+          >
+            Create New
+            <app-icon name="ArrowUp" [size]="15" />
+          </button>
+        </div>
+
+        <div class="mb-2 px-3 pt-2">
+          <span class="text-[10.5px] font-medium uppercase tracking-[0.09em] text-foreground-muted"
+            >Workspace</span
+          >
+        </div>
+
+        <div class="flex flex-col gap-0.5">
+          @for (link of mainNav; track link.title) {
+            <a
+              [routerLink]="link.path"
+              routerLinkActive="bg-hover-background text-foreground"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="closeMobile()"
+              class="flex items-center gap-3 px-3 py-2 text-[13px] font-medium text-foreground-muted rounded-lg transition-all hover:bg-background-subtle hover:text-foreground"
+            >
+              <app-icon [name]="link.icon" [size]="18" />
+              {{ link.title }}
+            </a>
+          }
+        </div>
+      }
+
+      @if (user.is_staff) {
+        <div class="mt-2 mb-2 px-3">
+          <span class="text-[10.5px] font-medium uppercase tracking-[0.09em] text-foreground-muted"
+            >Administration</span
+          >
+        </div>
+
+        <div class="flex flex-col gap-0.5">
+          @for (link of adminNav; track link.title) {
+            <a
+              [routerLink]="link.path"
+              routerLinkActive="bg-hover-background text-foreground"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="closeMobile()"
+              class="flex items-center gap-3 px-3 py-2 text-[13px] font-medium text-foreground-muted rounded-lg transition-all hover:bg-background-subtle hover:text-foreground"
+            >
+              <app-icon [name]="link.icon" [size]="18" />
+              {{ link.title }}
+            </a>
+          }
+        </div>
+      }
+    }
+  </nav>
+
+  <div class="shrink-0 px-3 pb-4 pt-3 relative border-t border-border/50">
+    @if (user$ | async; as user) {
+      <button
+        (click)="toggleUserPopover($event)"
+        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-hover-background transition-colors cursor-pointer group"
+      >
+        <div
+          class="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center text-[13px] font-semibold shrink-0 select-none"
+        >
+          {{ getInitials(user.first_name, user.last_name) }}
+        </div>
+        <div class="flex flex-col min-w-0 text-left flex-1">
+          <span class="text-[13px] font-medium text-foreground leading-tight"
+            >{{ user.first_name }} {{ user.last_name }}</span
+          >
+          <span class="text-[11px] font-light text-foreground-muted truncate leading-tight">{{
+            user.email
+          }}</span>
+        </div>
+        <app-icon
+          name="EllipsisVertical"
+          [size]="15"
+          class="text-foreground-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+        />
+      </button>
+
+      @if (showUserPopover()) {
+        <div
+          class="absolute bottom-[calc(100%_-_1px)] left-3 right-3 z-50 bg-background border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-150"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="flex items-center gap-3 px-4 py-3.5 border-b border-border/50">
+            <div
+              class="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center text-[13px] font-semibold shrink-0 select-none"
+            >
+              {{ getInitials(user.first_name, user.last_name) }}
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-[13px] font-medium text-foreground"
+                >{{ user.first_name }} {{ user.last_name }}</span
+              >
+              <span class="text-[11px] font-light text-foreground-muted truncate">{{
+                user.email
+              }}</span>
+            </div>
+          </div>
+          <div>
+            <button
+              (click)="navigateTo('configuration/settings')"
+              class="w-full flex items-center gap-3 px-4 py-2 text-[13px] font-medium text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="User" [size]="15" /> Profile
+            </button>
+            <button
+              (click)="navigateTo('configuration/settings')"
+              class="w-full flex items-center gap-3 px-4 py-2 text-[13px] font-medium text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="Settings" [size]="15" /> Settings
+            </button>
+            <button
+              (click)="handleSignOut()"
+              class="w-full flex items-center gap-3 px-4 py-2 text-[13px] font-medium text-error hover:bg-error-bg-hover transition-colors cursor-pointer"
+            >
+              <app-icon name="LogOut" [size]="15" /> Sign out
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</aside>

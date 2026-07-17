@@ -1,0 +1,153 @@
+<div class="w-full flex-1 px-7 flex flex-col gap-5">
+  <stats-card [data]="documentStats()" />
+
+  <document-toolbar
+    [totalCount]="filteredDocs().length"
+    [selectedCount]="selectedCount"
+    [searchQuery]="searchQuery()"
+    [activeFilter]="activeFilter()"
+    [sortField]="sortField()"
+    (clearSelection)="clearSelection()"
+    (searchChange)="onSearchChange($event)"
+    (filterChange)="onFilterChange($event)"
+    (sortChange)="onSortChange($event)"
+    (downloadSelected)="onDownloadSelected()"
+    (deleteSelected)="onDeleteSelected()"
+  />
+
+  @if (isLoading()) {
+    <div class="flex flex-col items-center gap-4 py-24 justify-center">
+      <div class="w-10 h-10 rounded-full border-3 border-border border-t-accent animate-spin"></div>
+      <span class="text-[12px] font-medium tracking-[0.1em] text-foreground-muted">
+        Loading documents
+      </span>
+    </div>
+  }
+
+  @if (!isLoading() && filteredDocs().length === 0) {
+    <div class="flex flex-col items-center justify-center py-24 text-center">
+      <div class="mb-5 p-5 rounded-full text-foreground-muted bg-hover-background">
+        <svg-emptystate-icon [size]="55" />
+      </div>
+      <p class="text-lg font-medium text-foreground mb-2">
+        {{ searchQuery() || activeFilter() !== 'all' ? 'No documents match' : 'No documents yet' }}
+      </p>
+      <p class="text-xs font-medium text-foreground-muted max-w-xs">
+        {{
+          searchQuery() || activeFilter() !== 'all'
+            ? 'Try adjusting your search or filter.'
+            : 'Upload a document to get started.'
+        }}
+      </p>
+    </div>
+  }
+
+  @if (!isLoading() && filteredDocs().length > 0) {
+    <document-table
+      [documents]="paginatedDocs()"
+      [selectedIds]="selectedIds"
+      [signingInProgress]="signingInProgress()"
+      (toggleOne)="toggleOne($event)"
+      (toggleAll)="toggleAll()"
+      (signDocument)="onSignDocument($event)"
+      (verifyDocument)="onVerifyDocument($event)"
+      (downloadDocument)="onDownloadDocument($event)"
+      (deleteDocument)="onDeleteDocument($event)"
+      (viewDocument)="onViewDocument($event)"
+    />
+
+    <div class="flex items-center justify-between mt-1 mb-7">
+      <span class="text-[12px] font-medium text-foreground-muted">
+        Showing
+        <span class="font-medium text-foreground mx-1">
+          {{ (currentPage() - 1) * 10 + 1 }}–{{ visibleEndCount() }}
+        </span>
+        of <span class="font-medium text-foreground mx-1">{{ filteredDocs().length }}</span>
+        {{ filteredDocs().length === 1 ? 'document' : 'documents' }}
+      </span>
+
+      <div class="flex items-center gap-1">
+        <button
+          (click)="goToPage(currentPage() - 1)"
+          [disabled]="currentPage() === 1"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-border text-foreground-muted bg-background transition-colors cursor-pointer hover:bg-hover-background hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <app-icon [name]="'ChevronLeft'" [size]="15" />
+        </button>
+
+        @if (pageNumbers()[0] > 1) {
+          <button
+            (click)="goToPage(1)"
+            class="w-8 h-8 flex items-center justify-center rounded-lg border border-border text-[12.5px] font-medium text-foreground-muted bg-background hover:bg-hover-background transition-colors cursor-pointer"
+          >
+            1
+          </button>
+          @if (pageNumbers()[0] > 2) {
+            <span class="w-8 h-8 flex items-center justify-center text-foreground-muted text-[12px]"
+              >…</span
+            >
+          }
+        }
+
+        @for (page of pageNumbers(); track page) {
+          <button
+            (click)="goToPage(page)"
+            class="w-8 h-8 flex items-center justify-center rounded-lg border border-border text-[12.5px]
+                   font-medium transition-colors cursor-pointer
+                   {{
+              page === currentPage()
+                ? 'bg-background text-foreground'
+                : 'border-border text-foreground-muted bg-background hover:bg-hover-background hover:text-foreground'
+            }}"
+          >
+            {{ page }}
+          </button>
+        }
+
+        @if (pageNumbers()[pageNumbers().length - 1] < totalPages()) {
+          @if (pageNumbers()[pageNumbers().length - 1] < totalPages() - 1) {
+            <span class="w-8 h-8 flex items-center justify-center text-foreground-muted text-[12px]"
+              >…</span
+            >
+          }
+          <button
+            (click)="goToPage(totalPages())"
+            class="w-8 h-8 flex items-center justify-center rounded-lg border border-border text-[12.5px] font-medium text-foreground-muted bg-background hover:bg-hover-background transition-colors cursor-pointer"
+          >
+            {{ totalPages() }}
+          </button>
+        }
+
+        <button
+          (click)="goToPage(currentPage() + 1)"
+          [disabled]="currentPage() === totalPages()"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-border text-foreground-muted bg-background transition-colors cursor-pointer hover:bg-hover-background hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <app-icon [name]="'ChevronRight'" [size]="15" />
+        </button>
+      </div>
+    </div>
+  }
+
+  <verification-modal
+    [isOpen]="showVerificationModal()"
+    [isLoading]="isVerifying()"
+    [result]="verificationResult()"
+    (close)="closeVerificationModal()"
+  />
+
+  <document-view-modal
+    [isOpen]="showViewModal()"
+    [isLoading]="viewModalLoading()"
+    [documentName]="viewDocumentName()"
+    [data]="viewDocumentData()"
+    (close)="closeViewModal()"
+  />
+
+  <delete-confirm-dialog
+    [deleteCount]="pendingDeleteCount()"
+    [documentName]="pendingDeleteName()"
+    (confirmed)="onDeleteConfirmed()"
+    (cancelled)="onDeleteCancelled()"
+  />
+</div>

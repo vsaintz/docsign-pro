@@ -1,0 +1,169 @@
+<section class="min-h-full p-5">
+  <div class="flex items-end justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-medium tracking-tight text-foreground leading-tight mb-2">
+        {{ greeting }}, {{ (user$ | async)?.first_name }}
+      </h1>
+      <p class="text-sm font-light text-foreground-muted tracking-wide">
+        Here's what's happening across your workspace today.
+      </p>
+    </div>
+    <span
+      class="hidden sm:inline-flex text-[11px] font-normal uppercase tracking-widest text-foreground-muted px-4 py-1.5 rounded-full border border-border bg-background shrink-0"
+    >
+      {{ today }}
+    </span>
+  </div>
+
+  @if (statCards$ | async; as statCards) {
+  <div
+    class="grid grid-cols-2 lg:grid-cols-4 gap-0 mb-6 border border-border rounded-xl bg-background overflow-hidden"
+  >
+    @for (card of statCards; track card.label; let i = $index; let count = $count) {
+    <div
+      class="p-4 sm:p-6 flex flex-col justify-between min-h-30 sm:min-h-35 border-border"
+      [class]="{
+        'max-lg:border-r': i % 2 === 0 && i !== count - 1,
+        'max-lg:border-b': i < count - (count % 2 === 0 ? 2 : 1),
+        'lg:border-r': i % 4 !== 3,
+        'lg:border-b': i < count - 4
+      }"
+    >
+      <p class="text-sm text-foreground-muted mb-6 sm:mb-10">{{ card.label }}</p>
+      <div class="flex justify-between items-end gap-4">
+        <p
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter text-foreground leading-none"
+        >
+          {{ card.value }}
+        </p>
+        <p
+          class="text-xs text-right leading-tight"
+          [class]="card.warnSub ? 'text-error font-normal' : 'text-foreground-muted'"
+        >
+          {{ card.sub }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <div class="grid grid-cols-1 xl:grid-cols-[1fr_288px] gap-4 items-start">
+    <div class="flex flex-col gap-4">
+      <div class="rounded-xl border border-border bg-background overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-border">
+          <h3 class="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground-muted">
+            Recent Activity
+          </h3>
+          <a
+            routerLink="/dashboard/documents"
+            class="text-[12px] text-accent hover:underline cursor-pointer"
+          >
+            View all
+          </a>
+        </div>
+
+        @if (activityItems$ | async; as activityItems) {
+        <ul class="divide-y divide-divider-border">
+          @for (item of activityItems; track item.title) {
+          <li
+            class="flex items-start gap-3 px-5 py-3.5 hover:bg-background-subtle transition-colors cursor-default"
+          >
+            <div
+              class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-border text-foreground"
+            >
+              <app-icon [name]="item.iconType" [size]="14"></app-icon>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                <span class="text-[13.5px] font-normal truncate max-w-65"> {{ item.title }} </span>
+                @if (item.badge) {
+                <span
+                  class="inline-flex items-center text-[10.5px] font-medium px-2 py-0.5 rounded-md {{ item.badge.bg }} {{ item.badge.text }}"
+                >
+                  {{ item.badge.label }}
+                </span>
+                }
+              </div>
+              <p class="text-[12px] font-light text-foreground-muted">{{ item.meta }}</p>
+            </div>
+
+            <span
+              class="hidden sm:block text-[11.5px] font-light text-foreground-muted shrink-0 pt-0.5 whitespace-nowrap"
+            >
+              {{ item.time }}
+            </span>
+          </li>
+          }
+        </ul>
+        }
+      </div>
+
+      <div class="rounded-xl border border-border bg-background overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-border">
+          <h3 class="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground-muted">
+            Recent Documents
+          </h3>
+          <a
+            routerLink="/dashboard/documents"
+            class="text-[12px] text-accent hover:underline cursor-pointer"
+          >
+            Open My Documents
+          </a>
+        </div>
+
+        @if (recentDocs$ | async; as recentDocs) {
+        <ul class="divide-y divide-divider-border">
+          @for (doc of recentDocs; track doc.name) {
+          <li
+            class="flex items-center gap-3 px-5 py-3 hover:bg-background-subtle transition-colors cursor-pointer"
+          >
+            <div
+              class="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-medium text-foreground shrink-0"
+            >
+              {{ getDocType(doc.file_type) }}
+            </div>
+            <span class="flex-1 min-w-0 text-[13px] font-normal text-[oklch(0.28_0_0)] truncate">
+              {{ doc.name }}
+            </span>
+            <span class="text-[11.5px] font-light text-[oklch(0.68_0_0)] shrink-0">
+              {{ doc.date }}
+            </span>
+          </li>
+          }
+        </ul>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 xl:sticky xl:top-6">
+      @if (stats$ | async; as stats) {
+      <widget-signature-progress [total]="stats.total_documents" [signed]="stats.signed_documents">
+      </widget-signature-progress>
+      }
+
+      <div class="rounded-[10px] border border-border bg-background overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-border">
+          <h3 class="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground-muted">
+            Quick Actions
+          </h3>
+        </div>
+        <div class="flex flex-col gap-1.5 p-3">
+          @for (action of quickActions; track action.label) {
+          <button
+            class="flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-[13px] font-normal text-foreground-muted text-left transition-all hover:bg-background-subtle hover:text-foreground cursor-pointer"
+          >
+            <div
+              class="w-8 h-8 rounded-md flex items-center justify-center shrink-0 border border-border"
+            >
+              <app-icon [name]="action.type" [size]="12"></app-icon>
+            </div>
+            {{ action.label }}
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

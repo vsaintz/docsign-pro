@@ -1,0 +1,90 @@
+<main class="w-full min-h-svh flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl flex rounded-lg shadow-lg overflow-hidden border border-border">
+    <div class="w-full flex flex-col justify-center flex-1 p-8 md:p-12">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold">Log into DocSign Pro</h1>
+        <p class="text-sm text-foreground-muted mt-2">
+          Enter your email below to login to your account
+        </p>
+      </div>
+
+      <form [formGroup]="signinForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between">
+            <label for="email" class="text-sm font-medium">Email</label>
+            @if (signinForm.get('email')?.touched) {
+              @if (signinForm.get('email')?.hasError('required')) {
+                <span class="text-xs text-error font-medium">Email is required</span>
+              } @else if (signinForm.get('email')?.hasError('email')) {
+                <span class="text-xs text-error font-medium">Invalid email format</span>
+              }
+            }
+          </div>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="me@example.com"
+            class="w-full py-2 px-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signinForm.get('email')?.invalid && signinForm.get('email')?.touched
+            "
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label for="password" class="text-sm font-medium">Password</label>
+            @if (signinForm.get('password')?.invalid && signinForm.get('password')?.touched) {
+              <span class="text-xs text-error font-medium">Password is required</span>
+            } @else {
+              <a routerLink="/landing" class="text-sm text-foreground-muted hover:underline"
+                >Forgot your password?</a
+              >
+            }
+          </div>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            autocomplete="current-password"
+            placeholder="password"
+            class="w-full py-2 px-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signinForm.get('password')?.invalid && signinForm.get('password')?.touched
+            "
+          />
+        </div>
+
+        <div class="flex flex-col gap-3 mt-2 pb-8">
+          <button
+            type="submit"
+            class="surface-dark w-full bg-(--background) text-(--foreground) py-2 rounded-md cursor-pointer font-medium"
+          >
+            Login
+          </button>
+
+          <p class="text-center text-sm text-foreground-muted mt-4">
+            Don't have an account?
+            <a
+              routerLink="/auth/signup"
+              class="underline underline-offset-2 cursor-pointer font-medium text-foreground"
+            >
+              Sign up
+            </a>
+          </p>
+
+          @if (errorMessage) {
+            <span class="w-full mt-3 text-center text-xs text-error font-medium">{{
+              errorMessage
+            }}</span>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="hidden md:block w-1/2">
+      <app-auth-banner></app-auth-banner>
+    </div>
+  </div>
+</main>

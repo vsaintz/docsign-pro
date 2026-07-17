@@ -1,0 +1,169 @@
+<main class="w-full min-h-svh flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl flex rounded-lg shadow-lg overflow-hidden border border-border">
+    <div class="hidden md:block w-1/2">
+      <app-auth-banner></app-auth-banner>
+    </div>
+    <div class="w-full flex flex-col justify-center flex-1 p-8 md:p-12">
+      <div class="mb-8">
+        <h1 class="text-xl font-bold">Create a DocSign Pro account</h1>
+        <p class="text-sm text-foreground-muted mt-2">
+          Enter your details below to create your account
+        </p>
+      </div>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+        <div class="flex gap-4">
+          <div class="flex flex-col gap-2 w-1/2">
+            <div class="flex justify-between">
+              <label for="firstName" class="text-sm font-medium">First name</label>
+              @if (signupForm.get('first_name')?.invalid && signupForm.get('first_name')?.touched) {
+                <span class="text-xs text-error font-medium">Required</span>
+              }
+            </div>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="first_name"
+              placeholder="First name"
+              class="w-full py-2 px-3 border text-sm border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+              [class.border-error]="
+                signupForm.get('first_name')?.invalid && signupForm.get('first_name')?.touched
+              "
+            />
+          </div>
+
+          <div class="flex flex-col gap-2 w-1/2">
+            <div class="flex justify-between">
+              <label for="middleName" class="text-sm font-medium">Middle name</label>
+            </div>
+            <input
+              type="text"
+              id="middleName"
+              formControlName="middle_name"
+              placeholder="Optional"
+              class="w-full py-2 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between">
+            <label for="lastName" class="text-sm font-medium">Last name</label>
+            @if (signupForm.get('last_name')?.invalid && signupForm.get('last_name')?.touched) {
+              <span class="text-xs text-error font-medium">Last name is required</span>
+            }
+          </div>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="last_name"
+            placeholder="Last name"
+            class="w-full py-2 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signupForm.get('last_name')?.invalid && signupForm.get('last_name')?.touched
+            "
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between">
+            <label for="phoneNumber" class="text-sm font-medium">Phone number</label>
+            @if (
+              signupForm.get('phone_number')?.invalid && signupForm.get('phone_number')?.touched
+            ) {
+              <span class="text-xs text-error font-medium">Phone number is required</span>
+            }
+          </div>
+          <input
+            type="tel"
+            id="phoneNumber"
+            formControlName="phone_number"
+            placeholder="Phone number"
+            class="w-full py-2 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signupForm.get('phone_number')?.invalid && signupForm.get('phone_number')?.touched
+            "
+          />
+        </div>
+
+        <div class="relative flex flex-col gap-2">
+          <div class="flex justify-between">
+            <label for="email" class="text-sm font-medium">Email</label>
+            @if (
+              signupForm.get('email')?.hasError('required') && signupForm.get('email')?.touched
+            ) {
+              <span class="text-xs text-error font-medium">Email is required</span>
+            }
+            @if (signupForm.get('email')?.hasError('email') && signupForm.get('email')?.touched) {
+              <span class="text-xs text-error font-medium">Please enter a valid email</span>
+            }
+          </div>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="me@example.com"
+            class="w-full py-2 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signupForm.get('email')?.invalid && signupForm.get('email')?.touched
+            "
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between">
+            <label for="password" class="text-sm font-medium">Password</label>
+            @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+              <span class="text-xs text-error font-medium">Password is required</span>
+            }
+          </div>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Password"
+            class="w-full py-2 px-3 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent transition"
+            [class.border-error]="
+              signupForm.get('password')?.invalid && signupForm.get('password')?.touched
+            "
+          />
+          <span
+            class="text-xs"
+            [class.text-error]="
+              signupForm.get('password')?.hasError('minlength') &&
+              signupForm.get('password')?.touched
+            "
+            [class.text-foreground-muted]="!signupForm.get('password')?.hasError('minlength')"
+          >
+            Must be at least 8 characters
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-3 mt-2 pb-8">
+          <button
+            type="submit"
+            class="surface-dark w-full bg-(--background) text-(--foreground) py-2 rounded-md font-medium cursor-pointer"
+          >
+            Create account
+          </button>
+
+          <p class="text-center text-sm text-foreground-muted mt-5">
+            Already have an account?
+            <a
+              routerLink="/auth/signin"
+              class="underline underline-offset-2 cursor-pointer font-medium text-foreground"
+            >
+              Login
+            </a>
+          </p>
+
+          @if (errorMessage) {
+            <span class="w-full mt-3 text-center text-error font-medium text-xs">{{
+              errorMessage
+            }}</span>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,524 @@
+<section class="min-h-full p-6 relative bg-background-subtle">
+  @if (isLoading) {
+  <div class="flex items-center justify-between gap-4 mb-8">
+    <div class="space-y-3">
+      <div class="h-8 w-48 rounded bg-gray-200 animate-pulse"></div>
+      <div class="h-4 w-72 rounded bg-gray-100 animate-pulse"></div>
+    </div>
+    <div class="h-9 w-28 rounded-lg bg-gray-200 animate-pulse shrink-0"></div>
+  </div>
+
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 mb-6 border border-border bg-background rounded-lg overflow-hidden"
+  >
+    @for (i of [1, 2, 3]; track i) {
+    <div
+      class="p-6 border-b lg:border-b-0 lg:border-r border-border last:border-r-0 flex flex-col justify-between min-h-35"
+    >
+      <div class="h-3 w-24 rounded bg-gray-200 animate-pulse mb-8"></div>
+      <div class="flex items-end justify-between gap-4">
+        <div class="h-10 w-20 rounded bg-gray-200 animate-pulse"></div>
+        <div class="h-3 w-16 rounded bg-gray-100 animate-pulse"></div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+    <div class="w-full sm:max-w-sm h-9 rounded-lg bg-gray-200 animate-pulse"></div>
+    <div
+      class="flex items-center rounded-lg border border-border bg-background overflow-hidden h-9 w-full sm:w-75 animate-pulse"
+    >
+      <div class="flex-1 border-r border-border bg-gray-100 h-full"></div>
+      <div class="flex-1 border-r border-border bg-gray-100 h-full"></div>
+    </div>
+  </div>
+
+  <div class="rounded-lg border border-border bg-background overflow-hidden flex flex-col mb-5">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-200 table-fixed">
+        <thead>
+          <tr class="border-b border-border text-foreground-muted">
+            <th class="w-[25%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              User
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Phone
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Role
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Status
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Docs
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Joined
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Last Login
+            </th>
+            <th class="w-[10%] px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-divider-border">
+          @for (i of [1,2,3,4,5,6,7]; track i) {
+          <tr class="animate-pulse border-b border-gray-100">
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 shrink-0 rounded-lg bg-gray-200"></div>
+                <div class="space-y-2 w-full">
+                  <div class="h-3 w-3/4 rounded bg-gray-200"></div>
+                  <div class="h-2 w-1/2 rounded bg-gray-100"></div>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-4"><div class="h-3 w-3/4 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-5 w-16 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-5 w-16 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-5 w-8 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-3 w-3/4 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-3 w-3/4 rounded bg-gray-200"></div></td>
+            <td class="px-5 py-4"><div class="h-6 w-6 rounded bg-gray-200 ml-auto"></div></td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div
+      class="px-6 py-4 border-t border-border flex items-center justify-between bg-background-subtle"
+    >
+      <div class="h-3 w-40 rounded bg-gray-200 animate-pulse"></div>
+      <div class="flex items-center gap-2">
+        <div class="h-9 w-20 rounded-lg bg-gray-200 animate-pulse"></div>
+        <div class="h-9 w-20 rounded-lg bg-gray-200 animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+
+  } @else {
+  <div class="flex items-center justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-medium tracking-tight text-foreground mb-1">Manage Users</h1>
+      <p class="text-sm font-normal text-foreground-muted">
+        View and manage all registered accounts across the organization.
+      </p>
+    </div>
+    <button
+      (click)="toggleAddModal(true)"
+      class="inline-flex items-center gap-2 px-4 py-2 text-[12.5px] font-medium rounded-lg surface-dark bg-(--background) text-(--foreground) border border-(--foreground)/10 shadow-sm hover:shadow-md hover:opacity-90 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+    >
+      <app-icon name="UserRoundPlus" [size]="18" />
+      <span>Add User</span>
+    </button>
+  </div>
+
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 mb-6 border border-border bg-background rounded-xl"
+  >
+    @for (card of statCards; track card.label) {
+    <div
+      class="p-6 border-b lg:border-b-0 lg:border-r border-border last:border-r-0 flex flex-col justify-between min-h-35"
+    >
+      <p class="text-sm text-foreground-muted mb-8">{{ card.label }}</p>
+
+      <div class="flex items-end justify-between gap-4">
+        <p class="text-5xl font-bold tracking-tighter text-foreground leading-none">
+          {{ card.value | number }}
+        </p>
+
+        <p class="text-xs text-right leading-tight text-foreground-muted">{{ card.sub }}</p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+    <div class="relative w-full sm:max-w-sm">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <app-icon name="Search" [size]="16" class="text-foreground-muted" />
+      </div>
+      <input
+        type="text"
+        placeholder="Search by name or email"
+        (input)="onSearch($event)"
+        class="w-full pl-9 pr-4 py-2 text-sm border border-border focus:outline-none rounded-lg bg-background transition-colors"
+      />
+    </div>
+
+    <div class="flex items-center rounded-lg border border-border bg-background overflow-hidden">
+      <div class="relative">
+        <select
+          [(ngModel)]="roleFilter"
+          (change)="onFilterChange()"
+          class="appearance-none px-4 py-2.5 pr-8 text-[12.5px] font-medium bg-transparent border-r border-border outline-none cursor-pointer"
+        >
+          <option value="all">All Roles</option>
+          <option value="admin">Admins Only</option>
+          <option value="user">Users Only</option>
+        </select>
+
+        <app-icon
+          name="ChevronDown"
+          [size]="14"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+        />
+      </div>
+
+      <div class="relative">
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="onFilterChange()"
+          class="appearance-none px-4 py-2.5 pr-8 text-[12.5px] font-medium bg-transparent border-r border-border outline-none cursor-pointer"
+        >
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="pending">Pending</option>
+        </select>
+
+        <app-icon
+          name="ChevronDown"
+          [size]="14"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border border-border bg-background overflow-hidden flex flex-col mb-5">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-200 table-fixed">
+        <thead>
+          <tr class="border-b border-border text-foreground-muted">
+            <th class="w-[25%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              User
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Phone
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Role
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Status
+            </th>
+            <th class="w-[10%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Docs
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Joined
+            </th>
+            <th class="w-[15%] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.08em]">
+              Last Login
+            </th>
+            <th class="w-[10%] px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-divider-border">
+          @if (users.length === 0) {
+          <tr>
+            <td colspan="7" class="px-6 py-12 text-center text-sm text-foreground-muted">
+              No users found matching your filters.
+            </td>
+          </tr>
+          } @else { @for (user of users; track user.id) {
+          <tr class="hover:bg-background-subtle transition-colors group">
+            <td class="px-5 py-3.5 overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-9 h-9 rounded-lg bg-background border border-border flex font-medium items-center justify-center text-xs text-foreground shrink-0"
+                >
+                  {{ getInitials(user) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm font-medium text-foreground truncate">
+                    {{ user.full_name || user.first_name + ' ' + user.last_name }}
+                  </div>
+                  <div class="text-xs text-foreground-muted mt-0.5 truncate">{{ user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td
+              class="px-5 py-3.5 text-[13px] text-foreground-muted font-medium whitespace-nowrap truncate"
+            >
+              {{ user.phone_number ? '+91 ' + user.phone_number : 'None' }}
+            </td>
+            <td class="px-5 py-3.5 text-[13px] font-medium text-foreground-muted truncate">
+              {{ user.is_staff ? 'Admin' : 'User' }}
+            </td>
+            <td class="px-5 py-3.5 truncate text-foreground">
+              @if (!user.is_active) {
+              <span class="text-[13px] font-medium"> Inactive </span>
+              } @else if (!user.last_login) {
+              <span class="text-[13px] font-medium"> Pending </span>
+              } @else {
+              <span class="text-[13px] font-medium"> Active </span>
+              }
+            </td>
+            <td class="px-5 py-3.5 text-[13px] font-medium text-foreground">
+              {{ user.document_count || 0 }}
+            </td>
+            <td
+              class="px-5 py-3.5 text-[13px] text-foreground-muted font-medium whitespace-nowrap truncate"
+            >
+              {{ user.date_joined ? (user.date_joined | date:'MMM d, y') : '' }}
+            </td>
+            <td
+              class="px-5 py-3.5 text-[13px] font-medium text-foreground-muted whitespace-nowrap truncate"
+            >
+              {{ user.last_login ? (user.last_login | date:'MMM d, y, h:mm a') : 'Never logged In'
+              }}
+            </td>
+
+            <td class="px-5 py-3.5 text-right relative">
+              <button
+                (click)="toggleMenu(user.id, $event)"
+                class="text-foreground-muted hover:text-foreground rounded-lg p-1 transition-colors cursor-pointer opacity-0 invisible group-hover:opacity-100 group-hover:visible focus:opacity-100 focus:visible"
+                [class.opacity-100]="activeMenuId === user.id"
+                [class.visible]="activeMenuId === user.id"
+              >
+                <app-icon name="EllipsisVertical" [size]="18" />
+              </button>
+              <div
+                class="absolute right-8 top-1/2 -translate-y-1/2 w-32 bg-background border border-border rounded-lg shadow-lg transition-all z-10 overflow-hidden"
+                [class.opacity-0]="activeMenuId !== user.id"
+                [class.invisible]="activeMenuId !== user.id"
+                [class.opacity-100]="activeMenuId === user.id"
+                [class.visible]="activeMenuId === user.id"
+              >
+                <button
+                  (click)="initiateToggle(user)"
+                  class="w-full flex items-center gap-2 px-4 py-2 text-[12px] font-medium transition-colors hover:bg-background-subtle cursor-pointer"
+                >
+                  @if (user.is_active) { Deactivate } @else { Reactivate }
+                </button>
+              </div>
+            </td>
+          </tr>
+          } }
+        </tbody>
+      </table>
+    </div>
+
+    <div
+      class="px-6 py-4 border-t border-border flex items-center justify-between bg-background-subtle"
+    >
+      <span class="text-[12.5px] text-foreground-muted">
+        Showing
+        <span class="font-medium text-foreground"
+          >{{ totalUsers === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}</span
+        >
+        to
+        <span class="font-medium text-foreground"
+          >{{ Math.min(currentPage * pageSize, totalUsers) }}</span
+        >
+        of <span class="font-medium text-foreground">{{ totalUsers }}</span>
+      </span>
+      <div class="flex items-center gap-2">
+        <button
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+          class="px-4 py-2 text-[12.5px] font-medium border border-border bg-background rounded-lg hover:bg-background-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        >
+          Previous
+        </button>
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage * pageSize >= totalUsers"
+          class="px-4 py-2 text-[12.5px] font-medium border border-border bg-background rounded-lg hover:bg-background-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if (showAddModal) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px] p-4 sm:p-0"
+  >
+    <div
+      class="bg-background border border-border rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200"
+    >
+      <div class="px-6 py-4 border-b border-border flex justify-between items-center">
+        <h2 class="text-lg font-medium text-foreground tracking-tight">Register New User</h2>
+        <button
+          (click)="toggleAddModal(false)"
+          class="text-foreground-muted hover:text-foreground transition-colors cursor-pointer p-1 rounded-lg hover:bg-background-subtle"
+        >
+          <app-icon name="X" [size]="18" />
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto">
+        @if (errorMessage) {
+        <div
+          class="mb-5 p-3 bg-error-bg text-error text-sm rounded-lg border border-error-border flex items-start gap-2"
+        >
+          <app-icon name="BadgeAlert" [size]="16" class="mt-0.5 shrink-0" />
+          <p>{{ errorMessage }}</p>
+        </div>
+        }
+
+        <form
+          [formGroup]="addUserForm"
+          (ngSubmit)="onSubmitUser()"
+          class="space-y-4"
+          id="addUserForm"
+        >
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label class="text-[13px] font-medium text-foreground">First Name</label>
+              <input
+                type="text"
+                formControlName="first_name"
+                class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+                placeholder="Jane"
+              />
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[13px] font-medium text-foreground">Last Name</label>
+              <input
+                type="text"
+                formControlName="last_name"
+                class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+                placeholder="Doe"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[13px] font-medium text-foreground">Middle Name</label>
+            <input
+              type="text"
+              formControlName="middle_name"
+              class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+              placeholder="Optional"
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[13px] font-medium text-foreground">Email Address</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+              placeholder="jane@example.com"
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[13px] font-medium text-foreground">Phone Number</label>
+            <input
+              type="tel"
+              formControlName="phone_number"
+              class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+              placeholder="e.g. 9876543210"
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[13px] font-medium text-foreground">Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-foreground/30 bg-background transition-colors text-foreground placeholder:text-foreground-muted/50"
+              placeholder="e.g. eb4fe45e"
+            />
+            <p class="text-[11px] text-foreground-muted mt-1">
+              Must be at least 8 characters long.
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="px-6 py-4 border-t border-border flex items-center justify-end gap-3 bg-background-subtle"
+      >
+        <button
+          type="button"
+          (click)="toggleAddModal(false)"
+          class="px-4 py-2 text-[13px] font-medium border border-border bg-background rounded-lg hover:bg-background-subtle text-foreground transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          form="addUserForm"
+          [disabled]="isSubmitting"
+          class="px-4 py-2 text-[13px] font-medium rounded-lg bg-foreground text-background hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          @if (isSubmitting) {
+          <app-icon name="Loader" [size]="16" class="animate-spin" />
+          <span>Creating</span>
+          } @else {
+          <span>Create Account</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if (showConfirmModal && userToToggle) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px] p-4 sm:p-0"
+  >
+    <div
+      class="bg-background border border-border rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200"
+    >
+      <h2 class="mx-6 mt-5 text-lg font-medium text-foreground tracking-tight">Confirm Action?</h2>
+
+      <div class="p-6">
+        <p class="text-[13px] text-foreground leading-relaxed">
+          Are you sure you want to {{ userToToggle.is_active ? 'deactivate' : 'reactivate' }} the
+          account for {{ userToToggle.full_name || userToToggle.first_name }}?
+        </p>
+
+        @if (userToToggle.is_active) {
+        <p
+          class="flex items-center gap-2 text-[11.5px] text-foreground-muted mt-5 p-3 bg-background-subtle border border-divider-border rounded-lg"
+        >
+          <app-icon name="CircleAlert" [size]="15" />
+          They will be immediately logged out and lose all access to the system.
+        </p>
+        }
+      </div>
+
+      <div class="px-6 py-4 flex items-center justify-end gap-3 bg-background-subtle">
+        <button
+          (click)="cancelToggle()"
+          class="px-4 py-2 text-[13px] font-medium border border-border bg-background rounded-lg hover:bg-background-subtle text-foreground transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmToggle()"
+          class="px-4 py-2 text-[13px] font-medium rounded-lg hover:opacity-90 transition-colors cursor-pointer shadow-sm surface-dark bg-(--background) text-(--foreground) border border-(--border)"
+        >
+          Yes, {{ userToToggle.is_active ? 'Deactivate' : 'Reactivate' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if (showToast) {
+  <div
+    class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300"
+  >
+    <div
+      class="flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border"
+      [ngClass]="toastType === 'success'
+                ? 'surface-dark bg-(--background) text-(--foreground) border border-(--border)'
+                : 'bg-error-bg border-error-border text-error'"
+    >
+      @if (toastType === 'success') {
+      <app-icon name="CircleCheck" [size]="18" />
+      } @else {
+      <app-icon name="CircleAlert" [size]="18" />
+      }
+      <span class="text-[11px] pr-2">{{ toastMessage }}</span>
+    </div>
+  </div>
+  }
+</section>

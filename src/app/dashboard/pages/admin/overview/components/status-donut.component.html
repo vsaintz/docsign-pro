@@ -1,0 +1,47 @@
+<div class="flex items-center gap-5">
+  <div class="relative shrink-0" [style.width.px]="size" [style.height.px]="size">
+    <svg
+      [attr.viewBox]="'0 0 ' + size + ' ' + size"
+      [attr.width]="size"
+      [attr.height]="size"
+      class="-rotate-90"
+    >
+      <circle
+        [attr.cx]="center"
+        [attr.cy]="center"
+        [attr.r]="radius"
+        fill="none"
+        stroke="oklch(0.95 0.003 95)"
+        [attr.stroke-width]="strokeWidth"
+      />
+      @for (seg of segments; track seg.label; let i = $index) {
+        <circle
+          [attr.cx]="center"
+          [attr.cy]="center"
+          [attr.r]="radius"
+          fill="none"
+          [attr.stroke]="seg.color"
+          [attr.stroke-width]="strokeWidth"
+          [attr.stroke-dasharray]="dashArray(seg.value)"
+          [attr.stroke-dashoffset]="dashOffset(i)"
+        />
+      }
+    </svg>
+    <div class="absolute inset-0 flex flex-col items-center justify-center">
+      <span class="text-lg font-normal text-foreground leading-none">{{ total }}</span>
+      <span class="text-[10px] font-light text-foreground-muted uppercase tracking-wide mt-0.5"
+        >Total</span
+      >
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2 min-w-0">
+    @for (seg of segments; track seg.label) {
+      <div class="flex items-center gap-2 text-[12.5px]">
+        <span class="w-2.5 h-2.5 rounded-none shrink-0" [style.background]="seg.color"></span>
+        <span class="text-foreground-muted font-light truncate">{{ seg.label }}</span>
+        <span class="font-normal ml-auto pl-2 shrink-0">{{ percent(seg.value) }}%</span>
+      </div>
+    }
+  </div>
+</div>

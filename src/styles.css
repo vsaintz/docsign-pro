@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --background: oklch(1 0 0);
+  --background-subtle: oklch(0.991 0.0026 106.45);
+
+  --foreground: oklch(0.3012 0 0);
+  --foreground-muted: oklch(0.5555 0 0);
+  --placeholder-text: oklch(0.72 0 0);
+
+  --accent: oklch(0.6815 0.1182 40.06);
+  --accent-bg-hover: oklch(0.6274 0.1161 39.48);
+  --hover-background: oklch(0.975 0.004 90);
+  --border: oklch(0.95 0.0035 95);
+  --divider-border: oklch(0.965 0.003 95);
+
+  --status: oklch(0.7227 0.192 149.58);
+  --error: oklch(65.492% 0.20876 25.019);
+
+  --success-bg: oklch(0.96 0.04 149.58);
+  --success-text: oklch(0.45 0.18 149.58);
+  --success-border: oklch(0.85 0.12 149.58);
+  --success-bg-hover: oklch(0.93 0.04 149.58);
+  --success-border-hover: oklch(0.75 0.18 149.58);
+
+  --error-bg: oklch(0.96 0.04 25.019);
+  --error-text-hover: oklch(0.45 0.18 25.019);
+  --error-border: oklch(0.85 0.12 25.019);
+  --error-bg-hover: oklch(0.93 0.04 25.019);
+  --error-border-hover: oklch(0.75 0.18 25.019);
+
+  --font-dm-sans: 'DM Sans', system-ui, sans-serif;
+}
+
+.surface-dark {
+  --background: oklch(0.3012 0 0);
+  --background-subtle: oklch(0.9485 0.0109 95.17);
+  --hover-background: oklch(0.1 0 0);
+  --foreground: oklch(0.9818 0.0054 95.1);
+  --foreground-muted: oklch(91.887% 0.0001 271.152 / 0.8);
+  --border: oklch(0.38 0 0);
+  --text-accent: oklch(0.6 0.09 240);
+  --status: oklch(0.7227 0.192 149.58);
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-background-subtle: var(--background-subtle);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-placeholder-text: var(--placeholder-text);
+  --color-accent: var(--accent);
+  --color-accent-bg-hover: var(--accent-bg-hover);
+  --color-hover-background: var(--hover-background);
+  --color-border: var(--border);
+  --color-divider-border: var(--divider-border);
+
+  --color-status: var(--status);
+  --color-error: var(--error);
+
+  --color-success-bg: var(--success-bg);
+  --color-success-text: var(--success-text);
+  --color-success-border: var(--success-border);
+  --color-success-bg-hover: var(--success-bg-hover);
+  --color-success-border-hover: var(--success-border-hover);
+
+  --color-error-bg: var(--error-bg);
+  --color-error-text-hover: var(--error-text-hover);
+  --color-error-border: var(--error-border);
+  --color-error-bg-hover: var(--error-bg-hover);
+  --color-error-border-hover: var(--error-border-hover);
+
+  --font-family-dm-sans: var(--font-dm-sans);
+}
+
+body {
+  width: 100%;
+  min-height: 100dvh;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.88 0.004 95) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.88 0.004 95);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.8 0.006 95);
+}

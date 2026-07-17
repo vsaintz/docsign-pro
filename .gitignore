@@ -1,0 +1,36 @@
+# Python & Django
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv/
+venv/
+ENV/
+db.sqlite3
+/media/
+/static/
+
+# Node / Angular
+node_modules/
+/dist
+/tmp
+/out-tsc
+.angular/
+npm-debug.log
+yarn-error.log
+/coverage
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+*.log
+staticfiles/
+/django/media/
+
+# Extras
+django/scripts/
+src/environments/environment.ts
+src/environments/environment.prod.ts

@@ -1,0 +1,70 @@
+@if (showUploadModal()) {
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-4"
+  (click)="showUploadModal.set(false)"
+>
+  <div
+    class="bg-background border border-border rounded-2xl w-full max-w-3xl p-5 sm:p-7 shadow-xl"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-start justify-between mb-6 sm:mb-9">
+      <div class="flex items-start sm:items-center gap-3 sm:gap-5 flex-1 min-w-0 pr-3">
+        <div class="border border-border p-2.5 sm:p-3 rounded-full shrink-0">
+          <app-icon name="CloudUpload" [size]="25" />
+        </div>
+        <div class="flex flex-col items-left gap-1 min-w-0">
+          <h2 class="text-lg font-medium text-foreground">Upload document</h2>
+          <p class="text-sm text-foreground-muted line-clamp-2">
+            Select and upload the document you want to sign.
+          </p>
+        </div>
+      </div>
+      <button
+        (click)="showUploadModal.set(false)"
+        class="w-7 h-7 shrink-0 flex items-center justify-center rounded-md text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+      >
+        <app-icon name="X" [size]="15" />
+      </button>
+    </div>
+    <dash-file-upload (uploadSuccess)="onUploadSuccess()" />
+  </div>
+</div>
+}
+
+<div class="w-full min-h-full">
+  <div class="px-4 sm:px-7 py-5">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-5 pb-5">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5 mb-4 sm:mb-5">
+          <span class="text-[12.5px] font-medium text-foreground-muted">Documents</span>
+          <app-icon name="ChevronRight" [size]="15" />
+          <span class="text-[12.5px] font-medium text-foreground">My Documents</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">
+          My Documents
+        </h1>
+        <p class="text-[13px] font-light text-foreground-muted mt-1">
+          All your uploaded and created documents in one place.
+        </p>
+      </div>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button
+          (click)="onExport()"
+          class="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 text-[13px] text-foreground-muted hover:text-foreground font-medium shadow-sm rounded-lg bg-background active:scale-[0.98] cursor-pointer transition-colors"
+        >
+          <app-icon name="Download" [size]="15" />
+          <span class="leading-none">Export</span>
+        </button>
+        <button
+          (click)="showUploadModal.set(true)"
+          class="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 text-[13px] text-foreground-muted hover:text-foreground font-medium shadow-sm bg-background rounded-lg active:scale-[0.98] cursor-pointer transition-colors"
+        >
+          <span class="inline">New Document</span>
+          <app-icon name="ArrowUp" [size]="15" />
+        </button>
+      </div>
+    </div>
+  </div>
+  <list-document #listDocument />
+  <app-toast />
+</div>

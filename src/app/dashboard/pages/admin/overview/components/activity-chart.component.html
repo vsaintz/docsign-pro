@@ -1,0 +1,79 @@
+<svg [attr.viewBox]="'0 0 ' + viewW + ' ' + viewH" class="w-full h-auto overflow-visible">
+  <defs>
+    <linearGradient id="uploadedFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="oklch(0.6 0.19 275)" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="oklch(0.6 0.19 275)" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="verifiedFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="oklch(0.7 0.13 184)" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="oklch(0.7 0.13 184)" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  @for (g of gridSteps; track g.value) {
+    <line
+      [attr.x1]="padL"
+      [attr.x2]="viewW - padR"
+      [attr.y1]="g.y"
+      [attr.y2]="g.y"
+      stroke="oklch(0.93 0.004 90)"
+      stroke-width="1"
+      [attr.stroke-dasharray]="g.value === 0 ? 'none' : '2 4'"
+    />
+    <text
+      [attr.x]="padL - 6"
+      [attr.y]="g.y + 3"
+      text-anchor="end"
+      class="text-[8px] font-medium fill-[oklch(0.66_0.005_90)] tabular-nums"
+    >
+      {{ g.value }}
+    </text>
+  }
+
+  <path [attr.d]="areaPath('uploaded')" fill="url(#uploadedFill)" />
+  <path [attr.d]="areaPath('verified')" fill="url(#verifiedFill)" />
+
+  <path
+    [attr.d]="linePath('uploaded')"
+    fill="none"
+    stroke="oklch(0.6 0.19 275)"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    [attr.d]="linePath('verified')"
+    fill="none"
+    stroke="oklch(0.7 0.13 184)"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  @for (d of data; track d.label; let i = $index) {
+    <circle
+      [attr.cx]="xAt(i)"
+      [attr.cy]="yAt(d.uploaded)"
+      r="2"
+      fill="oklch(0.6 0.19 275)"
+      stroke="white"
+      stroke-width="1.25"
+    />
+    <circle
+      [attr.cx]="xAt(i)"
+      [attr.cy]="yAt(d.verified)"
+      r="2"
+      fill="oklch(0.7 0.13 184)"
+      stroke="white"
+      stroke-width="1.25"
+    />
+    <text
+      [attr.x]="xAt(i)"
+      [attr.y]="viewH - 4"
+      text-anchor="middle"
+      class="text-[8px] font-medium fill-[oklch(0.6_0.005_90)]"
+    >
+      {{ d.label }}
+    </text>
+  }
+</svg>

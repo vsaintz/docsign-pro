@@ -1,0 +1,83 @@
+<div class="flex flex-col md:flex-row md:items-center gap-3 w-full">
+  @if (selectedCount > 0) {
+    <div class="flex items-center gap-2 w-full overflow-x-auto">
+      <span class="text-[12.5px] font-medium text-foreground-muted mr-3 shrink-0 whitespace-nowrap">
+        <span class="text-foreground font-semibold">{{ selectedCount }}</span>
+        of {{ totalCount }} selected
+      </span>
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          (click)="clearSelection.emit()"
+          class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium border border-border rounded-lg bg-background text-foreground-muted hover:text-foreground transition-colors cursor-pointer"
+        >
+          <app-icon name="X" [size]="12" [stroke]="3" /> Clear
+        </button>
+        <button
+          (click)="downloadSelected.emit()"
+          class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium border border-border rounded-lg bg-background text-foreground-muted hover:text-foreground transition-colors cursor-pointer"
+        >
+          <app-icon name="Download" [size]="13" /> Download
+        </button>
+        <button
+          (click)="deleteSelected.emit()"
+          class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium border border-border rounded-lg bg-background text-foreground-muted hover:bg-error-bg hover:text-error hover:border-error-border transition-colors cursor-pointer"
+        >
+          <app-icon name="Trash2" [size]="13" /> Delete
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="relative w-full md:w-auto md:flex-1 md:max-w-xs shrink-0">
+      <app-icon
+        [name]="'Search'"
+        [size]="15"
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+      />
+      <input
+        type="text"
+        [value]="searchQuery"
+        (input)="searchChange.emit($any($event.target).value)"
+        placeholder="Search documents"
+        class="w-full pl-9 pr-3.5 py-2 text-[13px] text-foreground bg-background border border-border rounded-lg outline-none placeholder:text-[oklch(0.72_0_0)]"
+      />
+    </div>
+
+    <div
+      class="flex items-center gap-4 w-full md:flex-1 md:justify-between overflow-x-auto scrollbar-hide py-1"
+    >
+      <div class="flex items-center gap-1.5 shrink-0">
+        @for (f of filterOptions; track f.value) {
+          <button
+            (click)="filterChange.emit(f.value)"
+            class="shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg border transition-all cursor-pointer {{
+              activeFilter === f.value
+                ? 'surface-dark bg-(--background) text-(--foreground)'
+                : 'bg-background text-foreground-muted border-border hover:bg-background-subtle hover:text-foreground'
+            }}"
+          >
+            {{ f.label }}
+          </button>
+        }
+      </div>
+
+      <div class="relative shrink-0">
+        <select
+          [value]="sortField"
+          (change)="sortChange.emit($any($event.target).value)"
+          class="appearance-none pl-3 pr-8 py-2 text-[12.5px] font-medium text-foreground-muted bg-background border border-border rounded-lg outline-none cursor-pointer"
+        >
+          <option value="date">Last modified</option>
+          <option value="name">Name</option>
+          <option value="size">File size</option>
+          <option value="status">Status</option>
+          <option value="signature">Signature</option>
+        </select>
+        <app-icon
+          [name]="'ChevronDown'"
+          [size]="15"
+          class="absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+        />
+      </div>
+    </div>
+  }
+</div>

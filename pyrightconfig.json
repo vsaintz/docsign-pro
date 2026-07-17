@@ -1,0 +1,17 @@
+{
+  "venvPath": "django",
+  "venv": ".venv",
+  "executionEnvironments": [
+    {
+      "root": "django",
+      "extraPaths": ["django"],
+    },
+  ],
+  "typeCheckingMode": "basic",
+  "reportUnusedImport": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportArgumentType": "none",
+  "reportOptionalIterable": "none",
+  "reportOptionalSubscript": "none",
+  "reportAttributeAccessIssue": "none",
+}

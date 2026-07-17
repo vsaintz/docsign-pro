@@ -1,0 +1,577 @@
+<section class="min-h-full">
+  @if (showRenameModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+    (click)="closeRenameModal()"
+  >
+    <div
+      class="bg-background border border-border rounded-2xl w-full max-w-sm mx-4 p-6 shadow-xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-[17px] font-medium text-foreground">Rename folder</h2>
+        <button
+          (click)="closeRenameModal()"
+          class="w-7 h-7 flex items-center justify-center rounded-md text-foreground-muted hover:bg-hover-background transition-colors cursor-pointer"
+        >
+          <app-icon name="X" [size]="14" />
+        </button>
+      </div>
+
+      <label
+        class="block text-[11px] font-medium uppercase tracking-[0.07em] text-foreground-muted mb-1.5"
+      >
+        Folder name
+      </label>
+      <input
+        type="text"
+        [value]="renameValue()"
+        (input)="renameValue.set($any($event.target).value); renameError.set(null)"
+        (keydown.enter)="submitRename()"
+        class="w-full px-3.5 py-2.5 text-[13.5px] text-foreground bg-background border rounded-lg outline-none mb-1.5 transition-colors"
+        [class.border-error]="renameError()"
+        [class.border-border]="!renameError()"
+        autofocus
+      />
+      @if (renameError()) {
+      <p class="text-[11.5px] font-medium text-error min-h-5 mb-3">{{ renameError() }}</p>
+      }
+
+      <div class="flex items-center gap-2">
+        <button
+          (click)="closeRenameModal()"
+          class="flex-1 px-4 py-2.5 text-[13px] font-medium text-foreground-muted border border-border rounded-lg hover:bg-hover-background transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="submitRename()"
+          [disabled]="!renameValue().trim()"
+          class="flex-1 px-4 py-2.5 text-[13px] font-medium text-white rounded-lg transition-all cursor-pointer bg-accent hover:bg-accent-bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if (showAddDocModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+    (click)="showAddDocModal.set(false)"
+  >
+    <div
+      class="bg-background border border-border rounded-2xl w-full max-w-lg mx-4 shadow-xl flex flex-col max-h-[70vh]"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-start justify-between px-6 pt-6 pb-4 shrink-0">
+        <div>
+          <h2 class="text-[17px] font-medium text-foreground">Add document</h2>
+          <p class="text-[12px] text-foreground-muted mt-0.5">
+            Choose a document to add to this folder
+          </p>
+        </div>
+        <button
+          (click)="showAddDocModal.set(false)"
+          class="w-7 h-7 flex items-center justify-center rounded-md text-foreground-muted hover:bg-hover-background transition-colors cursor-pointer"
+        >
+          <app-icon name="X" [size]="14" />
+        </button>
+      </div>
+
+      <div class="overflow-y-auto flex-1 px-3 py-3 scroll-smooth custom-scrollbar">
+        @if (unassignedDocuments().length === 0) {
+        <div class="flex flex-col items-center justify-center py-10 text-center">
+          <div class="p-2 bg-hover-background rounded-full mb-2">
+            <app-icon name="FileX" [size]="30" class="text-foreground-muted mb-3" />
+          </div>
+          <p class="text-[13px] font-medium text-foreground mb-1">No available documents</p>
+          <p class="text-[12px] text-foreground-muted max-w-55">
+            All your documents are already assigned to folders, or you haven't uploaded any yet.
+          </p>
+        </div>
+        } @else { @for (doc of unassignedDocuments(); track doc.id) {
+        <button
+          (click)="addDocumentToFolder(doc)"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-hover-background transition-colors cursor-pointer text-left group"
+        >
+          <div
+            class="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-medium text-foreground shrink-0"
+          >
+            {{ getDocType(doc) }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-[13px] font-medium text-foreground truncate">{{ doc.name }}</p>
+            <p class="flex items-center text-[11px] text-foreground-muted">
+              {{ doc.file_type.toUpperCase() }}
+              <app-icon [name]="'Dot'" [size]="8" class="text-foreground-muted" /> {{
+              doc.file_size_display }}
+            </p>
+          </div>
+          <div
+            class="flex gap-1 items-center bg-accent opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rounded-md px-2 py-1"
+          >
+            <app-icon name="Plus" [size]="12" [stroke]="3" class="text-white" />
+            <span class="text-white text-[11.5px] font-medium">Add</span>
+          </div>
+        </button>
+        } }
+      </div>
+
+      @if (addDocError()) {
+      <div class="flex items-center gap-2 px-6 py-4">
+        <app-icon name="CircleAlert" [size]="14" class="text-error" />
+        <span class="text-xs font-medium text-error">{{ addDocError() }}</span>
+      </div>
+      }
+    </div>
+  </div>
+  } @if (error()) {
+  <div
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-xl shadow-lg max-w-sm w-full mx-4"
+  >
+    <app-icon name="CircleAlert" [size]="15" [stroke]="2.5" class="text-error shrink-0" />
+    <p class="text-[13px] text-foreground flex-1">{{ error() }}</p>
+    <button
+      (click)="dismissError()"
+      class="text-foreground-muted p-2 hover:text-foreground hover:bg-hover-background font-medium rounded-md transition-colors cursor-pointer"
+    >
+      <app-icon name="X" [size]="12" [stroke]="3" />
+    </button>
+  </div>
+  } @if (isLoading()) {
+  <div class="flex items-center justify-center min-h-[60vh]">
+    <div class="flex flex-col items-center gap-3">
+      <div class="w-6 h-6 border-3 border-border border-t-accent rounded-full animate-spin"></div>
+      <p class="text-[13px] text-foreground-muted">Loading projects</p>
+    </div>
+  </div>
+  } @else { @if (openFolderId() && openProject(); as project) {
+  <div class="px-6 pt-8 pb-0 md:px-10">
+    <nav class="flex items-center gap-1.5 mb-7">
+      <button
+        (click)="closeFolder()"
+        class="text-[12.5px] font-medium text-foreground-muted hover:text-foreground transition-colors cursor-pointer"
+      >
+        Projects
+      </button>
+      <app-icon name="ChevronRight" [size]="13" class="text-foreground-muted" />
+      <span class="text-[12.5px] font-medium text-foreground">{{ project.name }}</span>
+    </nav>
+
+    <div class="flex items-end justify-between gap-4 mb-6 pb-5">
+      <div class="flex items-center gap-3">
+        <svg-folder-icon
+          [stroke]="getFolderColor(project.accentClass)"
+          [fill]="getFolderBgColor(project.accentClass)"
+          [size]="38"
+        />
+        <div>
+          <h1 class="text-md md:text-xl font-medium tracking-tight text-foreground leading-tight">
+            {{ project.name }}
+          </h1>
+          <p class="text-[12px] text-foreground-muted">
+            {{ folderDocuments().length }} document{{ folderDocuments().length === 1 ? '' : 's' }}
+          </p>
+        </div>
+      </div>
+      <button
+        (click)="openAddDocModal($event)"
+        class="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-foreground-muted bg-background rounded-lg shadow-sm hover:text-foreground active:scale-[0.98] transition-colors cursor-pointer shrink-0"
+      >
+        <app-icon name="Plus" [size]="14" [stroke]="3" />
+        Add document
+      </button>
+    </div>
+  </div>
+
+  <div class="px-6 md:px-10 pb-12">
+    @if (folderDocuments().length === 0) {
+    <div class="flex flex-col items-center justify-center mt-15 py-24 text-center">
+      <div class="mb-5 p-5 rounded-full text-foreground-muted bg-hover-background">
+        <svg-emptystate-icon [size]="55" />
+      </div>
+      <p class="text-[17px] font-medium text-foreground mb-1.5">No documents yet</p>
+      <p class="text-[13px] text-foreground-muted mb-6 max-w-xs">
+        Add documents from your library to keep everything organised in one place.
+      </p>
+      <button
+        (click)="openAddDocModal($event)"
+        class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-white bg-accent rounded-lg hover:bg-accent-bg-hover transition-all cursor-pointer"
+      >
+        <app-icon name="Plus" [size]="15" [stroke]="3" />
+        Add document
+      </button>
+    </div>
+    } @else {
+    <div class="rounded-xl bg-background overflow-hidden">
+      @for (doc of folderDocuments(); track doc.id) {
+      <div
+        class="flex items-center gap-3 px-4 py-3 border-b border-divider-border last:border-b-0 hover:bg-hover-background transition-colors group cursor-pointer"
+      >
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+          <div
+            class="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-medium text-foreground shrink-0"
+          >
+            {{ getDocType(doc) }}
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[13px] font-medium text-foreground truncate max-w-50 xl:max-w-75">
+              {{ doc.name }}
+            </span>
+            <span class="flex items-center text-[11.5px] text-foreground-muted">
+              {{ doc.file_type.toUpperCase() }}
+              <app-icon [name]="'Dot'" [size]="8" class="text-foreground-muted inline" />
+              {{ doc.file_size_display }}
+            </span>
+          </div>
+        </div>
+
+        <div class="hidden sm:block shrink-0">
+          @if (doc.processing_status === 'completed') {
+          <span
+            class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-[oklch(0.93_0.06_145/0.3)] text-[oklch(0.38_0.12_145)]"
+          >
+            Ready
+          </span>
+          } @else if (doc.processing_status === 'processing') {
+          <span
+            class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-[oklch(0.93_0.04_75/0.3)] text-[oklch(0.48_0.10_75)]"
+          >
+            Processing
+          </span>
+          } @else if (doc.processing_status === 'failed') {
+          <span class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-error-bg text-error">
+            Failed
+          </span>
+          }
+        </div>
+
+        <button
+          (click)="removeDocumentFromFolder(doc)"
+          [disabled]="removingDocIds().has(doc.id)"
+          class="flex items-center gap-1.5 justify-center rounded-md px-2 py-1 text-error opacity-0 group-hover:opacity-100 bg-error-bg cursor-pointer disabled:cursor-not-allowed shrink-0"
+          title="Remove from folder"
+        >
+          @if (removingDocIds().has(doc.id)) {
+          <div
+            class="w-3.5 h-3.5 border border-current border-t-transparent rounded-full animate-spin"
+          ></div>
+          } @else {
+          <app-icon name="Trash2" [size]="13" />
+          <span class="text-xs font-medium">Remove</span>
+          }
+        </button>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="px-6 pt-8 pb-0 md:px-10">
+    <nav class="flex items-center gap-1.5 mb-4">
+      <span class="text-[12.5px] font-medium text-foreground">Projects</span>
+    </nav>
+
+    <div class="flex items-end justify-between gap-4 mb-6 pb-5">
+      <div>
+        <h1 class="text-[32px] font-medium tracking-tight text-foreground leading-tight mb-1">
+          Projects
+        </h1>
+        <p class="text-[12px] text-foreground-muted">
+          {{ filteredProjects().length }} folder{{ filteredProjects().length === 1 ? '' : 's' }}
+        </p>
+      </div>
+      <button
+        (click)="modalStateService.showNewProject.set(true)"
+        class="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-foreground-muted hover:text-foreground bg-background shadow-sm rounded-lg active:scale-[0.98] cursor-pointer shrink-0 transition-colors"
+      >
+        New folder
+        <app-icon name="ArrowUp" [size]="15" />
+      </button>
+    </div>
+  </div>
+
+  <div class="px-6 md:px-10 pb-12">
+    @if (searchQuery() === '') {
+    <div class="mb-8">
+      <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-foreground-muted mb-3">
+        Recently opened
+      </p>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1">
+        @for (p of recentProjects(); track p.id) {
+        <button
+          (click)="openFolder(p)"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-background-subtle transition-all cursor-pointer shrink-0 group select-none"
+        >
+          <svg-folder-icon
+            [stroke]="getFolderColor(p.accentClass)"
+            [fill]="getFolderBgColor(p.accentClass)"
+            [size]="38"
+          />
+          <span
+            class="text-[12px] font-medium text-foreground-muted group-hover:text-foreground transition-colors whitespace-nowrap max-w-30 truncate"
+          >
+            {{ p.name }}
+          </span>
+        </button>
+        }
+      </div>
+    </div>
+    }
+
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <div class="relative flex-1 max-w-xs">
+        <app-icon
+          name="Search"
+          [size]="14"
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+        />
+        <input
+          type="text"
+          placeholder="Search folders…"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          class="w-full pl-9 pr-3.5 py-2 text-[13px] text-foreground bg-background border border-border rounded-lg outline-none placeholder:text-placeholder-text transition-all"
+        />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="relative">
+          <select
+            [value]="sortKey()"
+            (change)="sortKey.set($any($event.target).value)"
+            class="appearance-none pl-3 pr-7 py-2 text-[12.5px] font-medium text-foreground-muted bg-background border border-border rounded-lg outline-none cursor-pointer"
+          >
+            @for (opt of sortOptions; track opt.key) {
+            <option [value]="opt.key">{{ opt.label }}</option>
+            }
+          </select>
+          <app-icon
+            name="ChevronDown"
+            [size]="11"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none"
+          />
+        </div>
+
+        <div
+          class="flex items-center border border-border rounded-lg overflow-hidden bg-background"
+        >
+          <button
+            (click)="viewMode.set('grid')"
+            class="px-3 py-2 transition-colors cursor-pointer {{ viewMode() === 'grid' ? 'bg-background-subtle text-foreground' : 'text-foreground-muted hover:bg-hover-background' }}"
+            title="Grid view"
+          >
+            <app-icon name="LayoutGrid" [size]="14" />
+          </button>
+          <div class="w-px h-4 bg-border"></div>
+          <button
+            (click)="viewMode.set('list')"
+            class="px-3 py-2 transition-colors cursor-pointer {{ viewMode() === 'list' ? 'bg-background-subtle text-foreground' : 'text-foreground-muted hover:bg-hover-background' }}"
+            title="List view"
+          >
+            <app-icon name="List" [size]="14" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (filteredProjects().length === 0) {
+    <div class="flex flex-col items-center justify-center mt-10 py-24 text-center">
+      <div class="mb-5 p-5 rounded-full text-foreground-muted bg-hover-background">
+        <svg-emptystate-icon [size]="55" />
+      </div>
+      <p class="text-[17px] font-medium text-foreground mb-1.5">
+        {{ searchQuery() ? 'No folders found' : 'No folders yet' }}
+      </p>
+      <p class="text-[13px] text-foreground-muted mb-6 max-w-xs">
+        {{ searchQuery() ? 'Try a different search term.' : 'Create your first folder to start
+        organising documents.' }}
+      </p>
+      @if (!searchQuery()) {
+      <button
+        (click)="modalStateService.showNewProject.set(true)"
+        class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-white bg-accent rounded-lg hover:bg-accent-bg-hover transition-all cursor-pointer"
+      >
+        <app-icon name="Plus" [size]="16" [stroke]="3" />
+        New folder
+      </button>
+      }
+    </div>
+    } @if (viewMode() === 'grid' && filteredProjects().length > 0) {
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5">
+      @for (project of filteredProjects(); track project.id) {
+      <div
+        class="relative group rounded-xl border border-border bg-background cursor-pointer select-none"
+        (click)="openFolder(project)"
+      >
+        <div class="p-4">
+          <div class="mb-3 relative w-fit">
+            <svg-folder-icon
+              [stroke]="getFolderColor(project.accentClass)"
+              [fill]="getFolderBgColor(project.accentClass)"
+              [size]="55"
+            />
+            @if (project.pinned) {
+            <div
+              class="absolute -top-0.5 right-0 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+              [style.background]="getFolderColor(project.accentClass)"
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="white" stroke="none">
+                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+              </svg>
+            </div>
+            }
+          </div>
+
+          <p class="text-[13px] font-medium text-foreground leading-tight line-clamp-2 mb-2.5 pr-4">
+            {{ project.name }}
+          </p>
+          <div class="flex items-center justify-between">
+            <p class="text-[11px] text-foreground-muted">
+              {{ project.docCount }} doc{{ project.docCount === 1 ? '' : 's' }}
+            </p>
+            <p class="text-[11px] text-foreground-muted">{{ project.modifiedLabel }}</p>
+          </div>
+        </div>
+
+        <div class="absolute top-2.5 right-2.5">
+          <button
+            (click)="toggleMenu(project.id, $event)"
+            class="w-6 h-6 flex items-center justify-center rounded-md text-foreground-muted hover:bg-hover-background cursor-pointer"
+          >
+            <app-icon name="Ellipsis" [size]="16" />
+          </button>
+
+          @if (activeMenu() === project.id) {
+          <div
+            class="absolute right-0 top-7 z-30 w-40 bg-background border border-border rounded-xl shadow-lg overflow-hidden"
+            (click)="$event.stopPropagation()"
+          >
+            <button
+              (click)="openFolder(project)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] font-medium text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="FolderOpen" [size]="13" />Open
+            </button>
+            <button
+              (click)="openRenameModal(project, $event)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] font-medium text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="FolderPen" [size]="13" />Rename
+            </button>
+            <button
+              (click)="togglePin(project.id)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] font-medium text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="Star" [size]="13" />
+              {{ project.pinned ? 'Unpin' : 'Pin to top' }}
+            </button>
+            <button
+              (click)="deleteFolder(project.id)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 font-medium text-[12.5px] text-error hover:bg-error-bg transition-colors cursor-pointer"
+            >
+              <app-icon name="Trash2" [size]="13" />Delete
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <button
+        (click)="modalStateService.showNewProject.set(true)"
+        class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-transparent hover:bg-background hover:border-border transition-all cursor-pointer min-h-27 group"
+      >
+        <div
+          class="w-10 h-10 rounded-lg border-2 border-dashed border-border flex items-center justify-center"
+        >
+          <app-icon name="Plus" [size]="13" [stroke]="3" class="text-foreground-muted" />
+        </div>
+        <span
+          class="text-[11.5px] text-foreground-muted group-hover:text-foreground transition-colors"
+        >
+          New folder
+        </span>
+      </button>
+    </div>
+    } @if (viewMode() === 'list' && filteredProjects().length > 0) {
+    <div class="rounded-xl border border-border bg-background overflow-hidden">
+      @for (project of filteredProjects(); track project.id) {
+      <div
+        class="flex items-center gap-3 px-4 py-3 border-b border-divider-border last:border-b-0 hover:bg-background-subtle transition-colors cursor-pointer group select-none"
+        (click)="openFolder(project)"
+      >
+        <div class="shrink-0">
+          <svg-folder-icon
+            [stroke]="getFolderColor(project.accentClass)"
+            [fill]="getFolderBgColor(project.accentClass)"
+            [size]="25"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+          <span class="text-[13px] font-medium text-foreground line-clamp-2"
+            >{{ project.name }}</span
+          >
+          @if (project.pinned) {
+          <span
+            class="shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-accent text-white"
+          >
+            Pinned
+          </span>
+          }
+        </div>
+        <div class="hidden sm:flex items-center gap-10 shrink-0">
+          <span class="text-[12px] text-foreground-muted">{{ project.docCount }} docs</span>
+          <span class="text-[12px] text-foreground-muted">{{ project.owner }}</span>
+        </div>
+
+        <div class="relative shrink-0" style="z-index: 1">
+          <button
+            (click)="toggleMenu(project.id, $event)"
+            class="w-7 h-7 flex items-center justify-center rounded-md text-foreground-muted opacity-0 group-hover:opacity-100 hover:bg-hover-background transition-all cursor-pointer"
+          >
+            <app-icon name="EllipsisVertical" [size]="14" />
+          </button>
+
+          @if (activeMenu() === project.id) {
+          <div
+            class="fixed z-50 w-40 bg-background border border-border rounded-xl shadow-lg overflow-hidden"
+            [style.transform]="'translateX(-100%)'"
+            (click)="$event.stopPropagation()"
+          >
+            <button
+              (click)="openFolder(project)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="FolderOpen" [size]="13" />Open
+            </button>
+            <button
+              (click)="openRenameModal(project, $event)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="FolderPen" [size]="13" />Rename
+            </button>
+            <button
+              (click)="togglePin(project.id)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] text-foreground-muted hover:bg-hover-background hover:text-foreground transition-colors cursor-pointer"
+            >
+              <app-icon name="Star" [size]="13" />
+              {{ project.pinned ? 'Unpin' : 'Pin to top' }}
+            </button>
+            <button
+              (click)="deleteFolder(project.id)"
+              class="w-full flex items-center gap-2.5 px-3.5 py-2 text-[12.5px] text-error hover:bg-error-bg transition-colors cursor-pointer"
+            >
+              <app-icon name="Trash2" [size]="13" />Delete
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  } }
+</section>
