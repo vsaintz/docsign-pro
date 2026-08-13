@@ -157,7 +157,7 @@ export class NavigationComponent {
       children: [
         {
           label: "Quick Start",
-          description: "Get started with Digital Signature in under 5 minutes.",
+          description: "Get started with DocSign Pro in under 5 minutes.",
           link: "/comingsoon",
         },
         {
@@ -182,7 +182,7 @@ export class NavigationComponent {
       icon: "ChevronDown",
       children: [
         {
-          label: "Digital Signatures",
+          label: "DocSign Pro",
           description: "RSA-PSS cryptographic signing for documents.",
           link: "/comingsoon",
         },
