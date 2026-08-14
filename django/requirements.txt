@@ -12,6 +12,7 @@ djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 et_xmlfile==2.0.0
 Faker==40.23.0
+gunicorn==26.0.0
 idna==3.18
 jcs==0.2.1
 librt==0.8.1
@@ -19,6 +20,7 @@ mypy==1.19.1
 mypy_extensions==1.1.0
 numpy==2.4.5
 openpyxl==3.1.5
+packaging==26.3
 pandas==3.0.3
 pathspec==1.0.4
 psycopg2==2.9.11
