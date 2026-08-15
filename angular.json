@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "digital-signature": {
+    "docsign-pro": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -29,6 +29,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -55,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "digital-signature:build:production"
+              "buildTarget": "docsign-pro:build:production"
             },
             "development": {
-              "buildTarget": "digital-signature:build:development"
+              "buildTarget": "docsign-pro:build:development"
             }
           },
           "defaultConfiguration": "development"

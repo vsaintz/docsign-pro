@@ -32,5 +32,3 @@ staticfiles/
 
 # Extras
 django/scripts/
-src/environments/environment.ts
-src/environments/environment.prod.ts
